@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DialogBox extends StatelessWidget {
+  final String title;
   final TextEditingController tcontroller;
   final TextEditingController dcontroller;
   final VoidCallback onSave;
@@ -12,12 +13,13 @@ class DialogBox extends StatelessWidget {
     required this.dcontroller,
     required this.onSave,
     required this.onCancel,
+    required this.title,
   });
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text("Add Todo"),
+      title: Text(title),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

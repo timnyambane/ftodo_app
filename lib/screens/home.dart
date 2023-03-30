@@ -31,6 +31,7 @@ class _HomePageState extends State<HomePage> {
         context: context,
         builder: (context) {
           return DialogBox(
+            title: "Add Todo",
             tcontroller: tController,
             dcontroller: dController,
             onCancel: () => Navigator.of(context).pop(),
@@ -62,16 +63,48 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> updateTodo(int id, Map<String, dynamic> data) async {
+  Future<void> editTodo(int id, String title, String desc) async {
+    final body = {'title': title, 'desc': desc, 'completed': false};
+    final url = 'http://10.0.2.2:8000/api/todos/update/$id';
+    final uri = Uri.parse(url);
+
     final response = await http.put(
-        Uri.parse('http://10.0.2.2:8000/api/todos/put/$id'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(data));
+      uri,
+      body: jsonEncode(body),
+      headers: {'Content-Type': 'application/json'},
+    );
+
     if (response.statusCode == 200) {
       fetchTodo();
+      successSnackBar(context, "Successfully updated");
     } else {
-      errorSnackBar(context, "Failed to update");
+      errorSnackBar(context, "Failed to edit");
     }
+  }
+
+  void editExistingTodo(dynamic todo) {
+    final tController = TextEditingController(text: todo['title']);
+    final dController = TextEditingController(text: todo['desc']);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return DialogBox(
+          title: "Edit Todo",
+          tcontroller: tController,
+          dcontroller: dController,
+          onCancel: () => Navigator.of(context).pop(),
+          onSave: () {
+            editTodo(
+              todo['id'],
+              tController.text,
+              dController.text,
+            );
+            Navigator.of(context).pop();
+          },
+        );
+      },
+    );
   }
 
   Future<void> deleteTodo(int id) async {
@@ -79,6 +112,7 @@ class _HomePageState extends State<HomePage> {
         .delete(Uri.parse('http://10.0.2.2:8000/api/todos/delete/$id'));
     if (response.statusCode == 200) {
       fetchTodo();
+      successSnackBar(context, "Successfully updated");
     } else {
       errorSnackBar(context, "Failed to delete");
     }
@@ -96,7 +130,9 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         todos = result;
       });
-    } else {}
+    } else {
+      errorSnackBar(context, "Failed to load data, try again later");
+    }
   }
 
   @override
@@ -114,17 +150,13 @@ class _HomePageState extends State<HomePage> {
             final todo = todos[index];
             return ListTile(
               leading: Checkbox(
-                value: todo['completed'] == 1,
-                onChanged: (value) {
-                  final data = {'completed': value == true ? 1 : 0};
-                  updateTodo(todo['id'], data);
-                },
-              ),
+                  value: todo['completed'] == 1, onChanged: (value) {}),
               title: Text(todo['title']),
               subtitle: Text(todo['desc']),
               trailing: PopupMenuButton(
                 onSelected: (value) {
                   if (value == 'edit') {
+                    editExistingTodo(todo);
                   } else if (value == 'delete') {
                     showDialog(
                         context: context,
