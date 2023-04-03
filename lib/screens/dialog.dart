@@ -18,35 +18,38 @@ class DialogBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(title),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: tcontroller,
-            decoration: const InputDecoration(
-                border: UnderlineInputBorder(), hintText: "Title"),
+    return SizedBox(
+      width: double.infinity,
+      child: AlertDialog(
+        title: Text(title),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: tcontroller,
+              decoration: const InputDecoration(
+                  border: UnderlineInputBorder(), hintText: "Title"),
+            ),
+            TextField(
+              controller: dcontroller,
+              decoration: const InputDecoration(
+                  border: UnderlineInputBorder(), hintText: "Description"),
+              keyboardType: TextInputType.multiline,
+              maxLines: 4,
+            )
+          ],
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: onCancel,
+            child: const Text("Cancel"),
           ),
-          TextField(
-            controller: dcontroller,
-            decoration: const InputDecoration(
-                border: UnderlineInputBorder(), hintText: "Description"),
-            keyboardType: TextInputType.multiline,
-            maxLines: 4,
+          ElevatedButton(
+            onPressed: onSave,
+            child: const Text("Save"),
           )
         ],
       ),
-      actions: <Widget>[
-        TextButton(
-          onPressed: onCancel,
-          child: const Text("Cancel"),
-        ),
-        ElevatedButton(
-          onPressed: onSave,
-          child: const Text("Save"),
-        )
-      ],
     );
   }
 }
