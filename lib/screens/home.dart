@@ -156,9 +156,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF3F3F3),
       appBar: AppBar(
-        title: const Text("Todo App"),
-        centerTitle: true,
-      ),
+          title: const Text("Todo App"), centerTitle: true, elevation: 0),
       body: Padding(
         padding: const EdgeInsets.all(4.0),
         child: RefreshIndicator(
@@ -177,13 +175,10 @@ class _HomePageState extends State<HomePage> {
                         setState(() {
                           isChecked = newVal;
                         });
-
-                        // Update the todo in the database
                         todo['completed'] = isChecked ? 1 : 0;
                         try {
                           await checkUpdate(todo, todo['id']);
                         } catch (e) {
-                          debugPrint('Error updating todo: $e');
                           errorSnackBar(context, "Failed to update todo.");
                         }
                       }
@@ -236,6 +231,7 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: createNewTodo,
+        elevation: 0,
         child: const Icon(Icons.add),
       ),
     );
