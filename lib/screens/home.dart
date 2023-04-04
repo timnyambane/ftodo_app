@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> fetchTodo() async {
-    const url = 'http://10.0.2.2:8000/api/todos/index';
+    const url = '$globalUrl/index';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
 
@@ -40,6 +40,7 @@ class _HomePageState extends State<HomePage> {
         todos = result;
       });
     } else {
+      debugPrint(response.body);
       errorSnackBar(context, "Failed to load data, try again later");
     }
   }
@@ -64,7 +65,7 @@ class _HomePageState extends State<HomePage> {
       'desc': dController.text,
       'completed': false
     };
-    const url = 'http://10.0.2.2:8000/api/todos/store';
+    const url = '$globalUrl/store';
     final uri = Uri.parse(url);
 
     final response = await http.post(uri,
@@ -110,7 +111,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> editTodo(int id, String title, String desc) async {
     final body = {'title': title, 'desc': desc, 'completed': false};
-    final url = 'http://10.0.2.2:8000/api/todos/update/$id';
+    final url = '$globalUrl/update/$id';
     final uri = Uri.parse(url);
 
     final response = await http.put(
@@ -128,8 +129,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> deleteTodo(int id) async {
-    final response = await http
-        .delete(Uri.parse('http://10.0.2.2:8000/api/todos/delete/$id'));
+    final response = await http.delete(Uri.parse('$globalUrl/delete/$id'));
     if (response.statusCode == 200) {
       fetchTodo();
       successSnackBar(context, "Successfully updated");
@@ -139,7 +139,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> checkUpdate(dynamic todo, int id) async {
-    final url = 'http://10.0.2.2:8000/api/todos/update/$id';
+    final url = '$globalUrl/update/$id';
     final uri = Uri.parse(url);
     final response = await http.put(
       uri,
